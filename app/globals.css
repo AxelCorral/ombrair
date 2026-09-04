@@ -1,0 +1,586 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Système de tokens Ombrair.
+ * Couche 1 : palette brute (les 6 couleurs de la charte, jamais utilisées
+ * directement dans les composants). Couche 2 : alias sémantiques shadcn
+ * (background/foreground/primary/...) dérivés de la palette. Couche 3 :
+ * tokens propres au produit (état thermique, lames, typographies).
+ *
+ * Règle de la charte : Fraîche et Ambre encodent toujours un état thermique
+ * (froid/chaud, ouvert/fermé) — jamais une couleur d'action générique.
+ * Persienne joue le rôle de couleur d'action neutre (boutons, liens, ring),
+ * en plus de sa fonction d'encre / fond sombre de section.
+ */
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* palette brute, exposée pour les rares usages hors état sémantique (ex: illustrations) */
+  --color-chaux: var(--color-chaux);
+  --color-persienne: var(--color-persienne);
+  --color-nuit: var(--color-nuit);
+  --color-fraiche: var(--color-fraiche);
+  --color-ambre: var(--color-ambre);
+  --color-braise: var(--color-braise);
+
+  /*
+   * SURFACES. Quatre niveaux explicites, distingués par la VALEUR DE FOND —
+   * jamais par une ombre portée. Avant cette passe, --card valait exactement
+   * --background en thème clair : une « carte » n'était donc qu'un trait de
+   * 1 px sur le même fond, ce qui expliquait l'impression de gabarit
+   * fonctionnel signalée par l'audit visuel.
+   *
+   *   background   fond de page
+   *   sourde       bande de section, change de chapitre sans bordure
+   *   panneau      regroupement réel (données techniques, encadré)
+   *   encre        section pleine en Persienne — le moment fort de la page
+   */
+  --color-surface-sourde: var(--surface-sourde);
+  --color-surface-panneau: var(--surface-panneau);
+  --color-encre: var(--encre);
+  --color-encre-foreground: var(--encre-foreground);
+  --color-encre-border: var(--encre-border);
+  --color-encre-muted: var(--encre-muted);
+
+  /*
+   * État thermique. DEUX registres distincts, à ne pas confondre :
+   *
+   *  - SIGNAL (`--color-etat-froid` / `--color-etat-chaud`) : les couleurs
+   *    officielles de la charte, telles quelles. Réservées aux surfaces,
+   *    pastilles, icônes, bordures, traits de courbe — tout ce qui n'a pas
+   *    à satisfaire un contraste de texte.
+   *
+   *  - TEXTE (`--color-etat-froid-texte` / `--color-etat-chaud-texte`) :
+   *    variantes assombries (thème clair) ou éclaircies (thème nuit),
+   *    calculées pour passer WCAG AA sur les fonds officiels. Ce sont les
+   *    SEULES à employer pour un chiffre ou un libellé.
+   *
+   * La charte n'est pas modifiée : Fraîche et Ambre gardent leurs valeurs.
+   * On sépare le rôle « signal » du rôle « lecture », parce qu'une couleur
+   * ne doit jamais être le seul canal d'information — et parce qu'une
+   * température doit d'abord être lisible.
+   */
+  --color-etat-froid: var(--color-fraiche);
+  --color-etat-chaud: var(--color-ambre);
+  --color-etat-froid-texte: var(--etat-froid-texte);
+  --color-etat-chaud-texte: var(--etat-chaud-texte);
+  --color-alerte: var(--color-braise);
+  --color-alerte-texte: var(--alerte-texte);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  --font-sans: var(--font-text);
+  --font-display: var(--font-display);
+  --font-mono: var(--font-mono);
+
+  /* écartement des lames, piloté par le taux d'ouverture (0/25/50/75/100 %) */
+  --spacing-lame-0: 0px;
+  --spacing-lame-25: 4px;
+  --spacing-lame-50: 8px;
+  --spacing-lame-75: 14px;
+  --spacing-lame-100: 22px;
+}
+
+:root {
+  /*
+   * Palette brute — valeurs de la charte retenue (concept 07, « arche
+   * méditerranéenne »). Persienne, Nuit et Chaux sont les hex imprimés sur
+   * la planche ; Fraîche et Ambre, non légendés, ont été relevés
+   * directement sur leurs pastilles. Source unique : ne pas réintroduire
+   * les anciennes valeurs du brief initial.
+   *
+   * Braise ne figure pas dans la charte retenue. Elle est conservée pour
+   * les alertes de l'application, où elle est déjà en service.
+   */
+  --color-chaux: #f4f1e9;
+  --color-persienne: #33665a;
+  --color-nuit: #161d23;
+  --color-fraiche: #2e8c8c;
+  --color-ambre: #c4862f;
+  --color-braise: #c4402a;
+
+  /*
+   * Variantes lisibles de Fraîche et Ambre, pour le TEXTE uniquement.
+   * Ratios mesurés sur Chaux (#f4f1e9), seuil AA = 4,5 :
+   *   #1f6f6f → 5,22   (Fraîche brute : 3,55 ✗)
+   *   #8b5e1f → 5,00   (Ambre brute  : 2,74 ✗)
+   * Même teinte, même famille : seule la luminosité descend.
+   */
+  --etat-froid-texte: #1f6f6f;
+  --etat-chaud-texte: #8b5e1f;
+
+  /*
+   * Même principe pour Braise. Elle reste la couleur d'alerte (icônes,
+   * bordures, pastille de compteur) ; sa variante texte est plus sombre.
+   * Braise brute sur Chaux tient de justesse (4,52) mais chute à 2,48 sur
+   * la carte du thème nuit — d'où une variante par thème plutôt qu'un
+   * réglage unique.
+   *   #a5321f → 6,05 sur Chaux
+   */
+  --alerte-texte: #a5321f;
+
+  --radius: 0.3125rem; /* 5px — menuiserie, jamais la pilule iOS */
+
+  /*
+   * Ciel du hero. Famille de tokens distincte et volontairement désaturée,
+   * dans l'esprit du projet : elle DÉPEINT un moment de la journée, elle
+   * n'encode aucune information thermique. Fraîche et Ambre restent
+   * réservées à l'état thermique et ne servent jamais ici.
+   * Ces couleurs ne dépendent pas du thème jour/nuit de l'interface :
+   * le ciel du hero suit l'heure simulée, pas la préférence utilisateur.
+   */
+  --ciel-nuit: #0d1a1f;
+  --ciel-aube: #47505c;
+  --ciel-matin: #9fb0b4;
+  --ciel-midi: #c8d3d2;
+  --ciel-apres-midi: #bcc3bc;
+  --ciel-coucher: #8a7f74;
+  --ciel-crepuscule: #33414a;
+
+
+  /* site, thème clair par défaut */
+  --background: var(--color-chaux);
+  --foreground: var(--color-persienne);
+  --card: var(--color-chaux);
+  --card-foreground: var(--color-persienne);
+  --popover: var(--color-chaux);
+  --popover-foreground: var(--color-persienne);
+  --primary: var(--color-persienne);
+  --primary-foreground: var(--color-chaux);
+  /*
+   * ESPACE DE MÉLANGE — pourquoi `srgb` et non `oklch` pour les surfaces.
+   *
+   * Chaux (#f4f1e9) est une couleur chaude de très faible chroma. Mélangée à
+   * Persienne DANS OKLCH, son teinte bascule presque immédiatement vers celle
+   * de Persienne : à 4 % seulement, le résultat vaut #e2eeea — un vert d'eau
+   * franc (R 226 < G 238), et non une Chaux ombrée. Toute l'échelle neutre du
+   * site partait donc en menthe pâle dès le premier niveau, alors que la
+   * charte demande que le design vive avec Chaux + Persienne + Nuit.
+   *
+   * Le même mélange en `srgb` donne #ecebe3 : la même matière, plus sombre.
+   * C'est ce que doit être une ombre sur un mur à la chaux.
+   *
+   * Ne sont PAS passés en srgb : --muted-foreground (couleur de TEXTE, dont
+   * les ratios AA ont été mesurés au pixel) et --card en thème nuit, dont la
+   * teinte Persienne fait l'ambiance nocturne saluée par l'audit.
+   */
+  --secondary: color-mix(in srgb, var(--color-persienne) 8%, var(--color-chaux));
+  --secondary-foreground: var(--color-persienne);
+  --muted: color-mix(in srgb, var(--color-persienne) 6%, var(--color-chaux));
+  /*
+   * 90 % et non 65 %. À 65 %, ce token tombait à 2,8:1 sur Chaux —
+   * très en dessous du seuil AA — alors qu'il porte la quasi-totalité du
+   * texte secondaire du site : chapôs, légendes, aides de formulaire,
+   * blocs d'hypothèses. Mesuré au pixel sur le rendu : 4,7:1.
+   * Il reste nettement plus clair que --foreground (5,8:1), donc la
+   * hiérarchie visuelle est préservée.
+   */
+  --muted-foreground: color-mix(in oklch, var(--color-persienne) 90%, var(--color-chaux));
+  --accent: color-mix(in srgb, var(--color-persienne) 10%, var(--color-chaux));
+  --accent-foreground: var(--color-persienne);
+  --destructive: var(--color-braise);
+  --destructive-foreground: var(--color-chaux);
+  /* 22 % et non 18 % : en srgb le mélange est moins contrasté qu'en oklch,
+     il faut un peu plus de Persienne pour garder un filet aussi lisible. */
+  --border: color-mix(in srgb, var(--color-persienne) 22%, var(--color-chaux));
+  --input: color-mix(in srgb, var(--color-persienne) 18%, var(--color-chaux));
+  --ring: var(--color-persienne);
+
+  /*
+   * Niveaux de surface — thème clair. Écarts volontairement faibles (4 % et
+   * 7 % de Persienne dans Chaux) : il s'agit de faire sentir un changement
+   * de plan, pas de dessiner des boîtes. C'est ce qui permet de retirer des
+   * bordures sans perdre la structure.
+   */
+  --surface-sourde: color-mix(in srgb, var(--color-persienne) 4%, var(--color-chaux));
+  --surface-panneau: color-mix(in srgb, var(--color-persienne) 8%, var(--color-chaux));
+
+  /*
+   * Encre — section pleine en Persienne. C'est le seul endroit où la couleur
+   * de marque occupe une surface entière ; elle marque un chapitre fort
+   * (l'écosystème, l'appel final), jamais un bloc courant.
+   */
+  --encre: var(--color-persienne);
+  --encre-foreground: var(--color-chaux);
+  --encre-border: color-mix(in oklch, var(--color-chaux) 22%, var(--color-persienne));
+  --encre-muted: color-mix(in oklch, var(--color-chaux) 78%, var(--color-persienne));
+
+  /* courbes int/ext des graphiques : intérieur en Fraîche, extérieur en Ambre — usage thermique, pas décoratif */
+  --chart-1: var(--color-ambre);
+  --chart-2: var(--color-fraiche);
+  --chart-3: var(--color-braise);
+  --chart-4: color-mix(in oklch, var(--color-persienne) 35%, var(--color-chaux));
+  --chart-5: color-mix(in oklch, var(--color-persienne) 55%, var(--color-chaux));
+
+  --sidebar: var(--card);
+  --sidebar-foreground: var(--card-foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
+
+/*
+ * Thème nuit. Posé sur <html> par le ThemeProvider selon la préférence de
+ * l'utilisateur (voir components/shared/theme-provider.tsx), et applicable
+ * en portée locale sur un conteneur pour illustrer l'app en sombre au
+ * milieu d'une page claire — c'est le cas des aperçus dans PhoneFrame et
+ * de la présentation projetée.
+ */
+.dark {
+  /*
+   * Sur fond sombre, la correction va dans l'autre sens : les couleurs de
+   * la charte doivent être ÉCLAIRCIES pour rester lisibles. Ratios mesurés
+   * sur les deux surfaces sombres du thème, Nuit (#161d23) et card
+   * (mélange Persienne 35 % / Nuit, ≈ #203736) :
+   *   #5fc9c9 → 8,66 sur Nuit · 6,43 sur card
+   *   #e2a44f → 7,82 sur Nuit · 5,81 sur card
+   */
+  --etat-froid-texte: #5fc9c9;
+  --etat-chaud-texte: #e2a44f;
+  /* #ef9d8c → 5,94 sur la carte sombre · 8,00 sur Nuit */
+  --alerte-texte: #ef9d8c;
+
+  --background: var(--color-nuit);
+  --foreground: var(--color-chaux);
+  --card: color-mix(in oklch, var(--color-persienne) 35%, var(--color-nuit));
+  --card-foreground: var(--color-chaux);
+  --popover: color-mix(in oklch, var(--color-persienne) 35%, var(--color-nuit));
+  --popover-foreground: var(--color-chaux);
+  --primary: var(--color-chaux);
+  --primary-foreground: var(--color-nuit);
+  --secondary: color-mix(in srgb, var(--color-chaux) 12%, var(--color-nuit));
+  --secondary-foreground: var(--color-chaux);
+  --muted: color-mix(in srgb, var(--color-chaux) 8%, var(--color-nuit));
+  /* 65 % et non 55 % : à 55 % le texte secondaire passait sur le fond
+     Nuit (5,4) mais échouait sur les cartes (4,0), qui sont plus claires. */
+  --muted-foreground: color-mix(in oklch, var(--color-chaux) 65%, var(--color-nuit));
+  --accent: color-mix(in srgb, var(--color-chaux) 14%, var(--color-nuit));
+  --accent-foreground: var(--color-chaux);
+  --destructive: var(--color-braise);
+  --destructive-foreground: var(--color-chaux);
+  /* En oklch, ce filet virait au gris rosé (#403638) par le même effet de
+     teinte. En srgb il reste un gris neutre froid, cohérent avec Nuit. */
+  --border: color-mix(in srgb, var(--color-chaux) 18%, var(--color-nuit));
+  --input: color-mix(in srgb, var(--color-chaux) 14%, var(--color-nuit));
+  --ring: var(--color-chaux);
+
+  /*
+   * Thème nuit. Les surfaces s'ÉCLAIRCISSENT au lieu de s'assombrir, et
+   * elles montent en Chaux plutôt qu'en Persienne : la règle de la charte
+   * veut que Persienne reste une couleur de marque, pas la couleur de
+   * toutes les surfaces sombres. `--card` conserve sa teinte Persienne
+   * existante pour ne pas casser l'ambiance nuit déjà réussie.
+   */
+  --surface-sourde: color-mix(in srgb, var(--color-chaux) 5%, var(--color-nuit));
+  --surface-panneau: color-mix(in srgb, var(--color-chaux) 9%, var(--color-nuit));
+
+  /* En nuit, l'encre ne peut pas être un aplat clair : elle reste une
+     Persienne assombrie, distincte du fond et des panneaux. */
+  --encre: color-mix(in oklch, var(--color-persienne) 55%, var(--color-nuit));
+  --encre-foreground: var(--color-chaux);
+  --encre-border: color-mix(in oklch, var(--color-chaux) 20%, var(--encre));
+  --encre-muted: color-mix(in oklch, var(--color-chaux) 76%, var(--encre));
+
+  --chart-1: var(--color-ambre);
+  --chart-2: var(--color-fraiche);
+  --chart-3: var(--color-braise);
+  --chart-4: color-mix(in oklch, var(--color-chaux) 35%, var(--color-nuit));
+  --chart-5: color-mix(in oklch, var(--color-chaux) 55%, var(--color-nuit));
+
+  --sidebar: var(--card);
+  --sidebar-foreground: var(--card-foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--accent-foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
+
+/*
+ * ─────────────────────────────────────────────────────────────────────────
+ * RÔLES TYPOGRAPHIQUES
+ *
+ * L'audit visuel a relevé que tout le site parlait à peu près la même
+ * voix : corps à 14 px, tous les H2 à la même taille, sources et libellés
+ * au même niveau que le texte courant. Le problème n'était pas la taille
+ * absolue mais l'ABSENCE D'ÉCART entre les rôles.
+ *
+ * Ces classes nomment sept rôles et fixent leurs proportions une fois pour
+ * toutes. Elles vivent dans la couche `components` : une utilitaire
+ * Tailwind posée après (`text-sm`, `leading-none`…) l'emporte toujours,
+ * donc un cas particulier reste possible sans lutte de spécificité.
+ *
+ * Le corps monte de 14 à 16 px et le texte de soutien à 15 px : le public
+ * visé a 35 à 65 ans et ne lit pas une interface de développeur.
+ * ─────────────────────────────────────────────────────────────────────────
+ */
+@layer components {
+  /* Surtitre technique — mono, comme l'annotation d'un plan. */
+  .t-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.2;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  /* Display — réservé au H1 des pages d'entrée et au hero. */
+  .t-display {
+    font-family: var(--font-display);
+    font-size: clamp(2.75rem, 6.2vw, 4.25rem);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    font-weight: 600;
+  }
+
+  /* Titre de page courant. */
+  .t-h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 4.4vw, 3.25rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    font-weight: 600;
+  }
+
+  /* Titre de chapitre. Nettement au-dessus du H3, ce qui n'était pas le cas. */
+  .t-h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 2.7vw, 2.375rem);
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    font-weight: 500;
+  }
+
+  .t-h3 {
+    font-family: var(--font-display);
+    font-size: 1.1875rem;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    font-weight: 500;
+  }
+
+  /* Chapô de section. Mesure limitée par le composant, pas ici. */
+  .t-lead {
+    font-size: clamp(1.0625rem, 1.15vw, 1.1875rem);
+    line-height: 1.6;
+  }
+
+  .t-body {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  /* Texte de soutien : descriptions courtes, aides, listes secondaires. */
+  .t-support {
+    font-size: 0.9375rem;
+    line-height: 1.65;
+  }
+
+  /* Légende, source, mention. Le plus petit niveau autorisé. */
+  .t-caption {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  /* Donnée chiffrée. Le mono ne sert QUE ça (règle de charte). */
+  .t-data {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+}
+
+/*
+ * Filet de lumière filtrée. Trois bandes horizontales inégales, dans la
+ * proportion du signe (la troisième plus sourde), utilisées comme OMBRE
+ * PORTÉE PAR UNE GÉOMÉTRIE — jamais comme décor posé en haut d'une carte.
+ * Réservé aux ouvertures : intérieur d'arche, embrasure du hero.
+ */
+@layer utilities {
+  .lumiere-lames {
+    background-image: repeating-linear-gradient(
+      180deg,
+      color-mix(in oklch, currentColor 9%, transparent) 0,
+      color-mix(in oklch, currentColor 9%, transparent) 2px,
+      transparent 2px,
+      transparent 11px
+    );
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/*
+ * Animations de la présentation projetée (/presentation).
+ * Centralisées ici avec le reste des tokens plutôt que dispersées dans les
+ * composants. Tout est neutralisé sous prefers-reduced-motion : aucune
+ * information ne doit dépendre d'une animation pour être comprise.
+ */
+@keyframes ombrair-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ombrair-reveal-x {
+  from {
+    opacity: 0;
+    transform: translateX(-18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ombrair-lame-ouvre {
+  from {
+    transform: scaleY(1);
+  }
+  to {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes ombrair-trace {
+  from {
+    stroke-dashoffset: var(--trace-longueur, 200);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes ombrair-fondu {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ombrair-pulse-mesure {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@layer utilities {
+  /* Apparition décalée : poser --i sur chaque enfant pour échelonner. */
+  .anim-reveal {
+    animation: ombrair-reveal 520ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(var(--i, 0) * 90ms);
+  }
+
+  .anim-reveal-x {
+    animation: ombrair-reveal-x 520ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(var(--i, 0) * 90ms);
+  }
+
+  /* Rideau de lames du titre : les bandes se rétractent vers le haut. */
+  .anim-lame-ouvre {
+    transform-origin: top;
+    animation: ombrair-lame-ouvre 620ms cubic-bezier(0.65, 0, 0.35, 1) both;
+    animation-delay: calc(var(--i, 0) * 60ms);
+  }
+
+  .anim-trace {
+    stroke-dasharray: var(--trace-longueur, 200);
+    animation: ombrair-trace 900ms cubic-bezier(0.4, 0, 0.2, 1) both;
+    animation-delay: calc(var(--i, 0) * 120ms);
+  }
+
+  .anim-pulse-mesure {
+    animation: ombrair-pulse-mesure 2.4s ease-in-out infinite;
+  }
+
+  /* Entrée de la diapositive elle-même, sous les révélations internes. */
+  .anim-fondu {
+    animation: ombrair-fondu 320ms ease-out both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-reveal,
+  .anim-reveal-x,
+  .anim-trace,
+  .anim-fondu,
+  .anim-pulse-mesure {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+
+  /* Le rideau ne s'anime pas : il est simplement absent. */
+  .anim-lame-ouvre {
+    animation: none !important;
+    transform: scaleY(0) !important;
+  }
+}

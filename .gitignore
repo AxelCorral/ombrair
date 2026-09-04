@@ -1,0 +1,23 @@
+# Dependencies and Next.js build output
+/node_modules/
+/.next/
+/out/
+
+# Local Vercel state and environment files
+/.vercel/
+.env*
+
+# Generated TypeScript state
+*.tsbuildinfo
+
+# Recovery-only material, kept locally outside the project history
+/miroir/
+/recovery-state/
+/tools/
+/.playwright-cli/
+/audit.zip
+
+# Common local/editor noise
+.DS_Store
+Thumbs.db
+*.log
