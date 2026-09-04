@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     siteName: "Ombrair",
     locale: "fr_FR",
     type: "website",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Ombrair" }],
+    images: [{ url: "/og.png?v=2", width: 1200, height: 630, alt: "Ombrair" }],
   },
 };
 
