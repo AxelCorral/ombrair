@@ -27,6 +27,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://ombrair.vercel.app"),
   title: {
     default: "Ombrair — la fraîcheur, avant la chaleur",
     template: "%s — Ombrair",
@@ -41,6 +42,7 @@ export const metadata: Metadata = {
     siteName: "Ombrair",
     locale: "fr_FR",
     type: "website",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Ombrair" }],
   },
 };
 
