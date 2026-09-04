@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ombrair
 
-## Getting Started
+Ombrair est un produit fictif réalisé dans le cadre d'un projet universitaire. Il
+imagine des volets, fenêtres et capteurs connectés capables d'anticiper la chaleur
+et d'adapter automatiquement l'ombrage et l'aération d'un logement.
 
-First, run the development server:
+## Simulateur sur 24 heures
+
+Le site comprend un simulateur thermique qui déroule une journée complète. Il met
+en relation la course du soleil, la température extérieure, l'inertie intérieure,
+la luminosité et l'humidité avec les décisions prises par les ouvrants. Des scènes
+3D rendent visibles la position du volet, l'orientation des lames et l'ouverture de
+la fenêtre.
+
+## Architecture
+
+L'interface est construite avec Next.js 15, React 19 et TypeScript. Elle comporte
+28 routes applicatives, dont une route dynamique pour les ressources. Les pages et
+composants de rendu vivent dans `app/` et `components/`.
+
+La physique et les règles d'automatisation restent hors de l'interface : elles sont
+implémentées dans des modules TypeScript purs sous `lib/`. Elles peuvent ainsi être
+testées sans navigateur ni rendu React. La suite actuelle exécute 219 tests répartis
+en 65 suites et couvre notamment le cycle jour/nuit, les températures, les volets,
+les fenêtres et leur coordination.
+
+## Sources des chiffres publiés
+
+- **Nuits tropicales** : Insee Flash PACA n°103, mai 2024 — données Météo-France,
+  Drias 2020.
+- **Confort d'été** : étude Pouget Consultants / IGNES sur la base DPE de l'Ademe,
+  juin 2026. L'analyse porte sur 9 millions de diagnostics de performance
+  énergétique. Elle est non redressée et ne prétend donc pas être représentative,
+  au sens statistique strict, du parc de logements français.
+
+## Lancer le projet en local
+
+Prérequis : Node.js et npm.
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ouvrez ensuite [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Pour lancer les tests :
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm test
+```
 
-## Learn More
+## Démonstration
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[Voir Ombrair en ligne](https://ombrair.vercel.app)
